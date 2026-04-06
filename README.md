@@ -23,7 +23,7 @@ SSUMC 10기 SpringBoot 스터디 A조
             
 ``` 
 ## 🎨 commit 규칙
-- 해당 commit이 미션에 관한 것일 경우: "mission/#해당 주차"
+- 해당 commit이 미션에 관한 것일 경우: "mission/#이슈번호"
 
 ```
 Ex) 1주차 미션 수행 후
@@ -33,7 +33,7 @@ mission/#01 - 서버 환경설정
 
 <br>
 
-- 해당 commit이 실습에 관한 것일 경우: "practice/#해당 주차"
+- 해당 commit이 실습에 관한 것일 경우: "practice/#이슈번호"
 ```
 Ex) 2주차 실습 수행 후
 practice/#02
