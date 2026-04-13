@@ -1,5 +1,6 @@
-package com.example.umc10th.domain.mission.exception;
+public class MissionException extends GeneralException {
 
-public class MissionException extends RuntimeException {
-
+    public MissionException(MissionErrorCode code) {
+        super(code);
+    }
 }
