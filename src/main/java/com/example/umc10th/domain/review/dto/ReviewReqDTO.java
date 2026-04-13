@@ -1,5 +1,10 @@
-package com.example.umc10th.domain.review.dto;
+package com.example.demo.review.dto;
 
 public class ReviewReqDTO {
 
+    public record ReviewCreate(
+            Long storeId,
+            Float score,
+            String body
+    ) {}
 }
