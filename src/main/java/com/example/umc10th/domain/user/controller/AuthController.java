@@ -2,8 +2,8 @@ package com.example.umc10th.domain.user.controller;
 
 import com.example.umc10th.domain.user.dto.UserReqDTO;
 import com.example.umc10th.domain.user.dto.UserResDTO;
+import com.example.umc10th.domain.user.exception.code.UserSuccessCode;
 import com.example.umc10th.global.apiPayload.ApiResponse;
-import com.example.umc10th.global.apiPayload.code.GeneralSuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +17,6 @@ public class AuthController {
     public ApiResponse<UserResDTO.JoinRes> join(
             @RequestBody UserReqDTO.JoinReq request
     ) {
-        return ApiResponse.onSuccess(GeneralSuccessCode.USER_JOIN_OK, null);
+        return ApiResponse.onSuccess(UserSuccessCode.USER_JOIN_OK, null);
     }
 }
