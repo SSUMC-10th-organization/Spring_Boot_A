@@ -1,2 +1,7 @@
-package com.example.umc10th.domain.mission.enums;public enum MissionStatus {
+package com.example.umc10th.domain.mission.enums;
+
+public enum MissionStatus {
+    ONGOING,
+    SUCCESS,
+    FAILED
 }
