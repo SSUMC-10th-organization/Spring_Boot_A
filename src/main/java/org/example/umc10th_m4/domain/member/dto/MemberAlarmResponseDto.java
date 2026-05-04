@@ -10,4 +10,4 @@ public class MemberAlarmResponseDto {
     private String content;
     private boolean isRead;
     private String createdAt;
-}   
+}

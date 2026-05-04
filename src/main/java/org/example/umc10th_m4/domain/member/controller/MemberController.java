@@ -37,6 +37,7 @@ public class MemberController {
         return ApiResponse.onSuccess("회원 탈퇴 완료");
     }
 
+    //알람
     @GetMapping("/{member_id}/alarms")
     public ApiResponse<List<MemberAlarmResponseDto>> getAlarms(
             @PathVariable(name = "member_id") long memberId,
