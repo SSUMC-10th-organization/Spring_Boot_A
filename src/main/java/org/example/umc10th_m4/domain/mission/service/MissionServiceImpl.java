@@ -6,6 +6,8 @@ import org.example.umc10th_m4.domain.mission.entity.MemberMission;
 import org.example.umc10th_m4.domain.mission.entity.Mission;
 import org.example.umc10th_m4.domain.mission.repository.MemberMissionRepository;
 import org.example.umc10th_m4.domain.mission.repository.MissionRepository;
+import org.example.umc10th_m4.domain.member.error.MemberErrorStatus;
+import org.example.umc10th_m4.domain.member.repository.MemberRepository;
 import org.example.umc10th_m4.domain.region.entity.Region;
 import org.example.umc10th_m4.domain.region.error.RegionErrorStatus;
 import org.example.umc10th_m4.domain.region.repository.RegionRepository;
@@ -27,6 +29,7 @@ public class MissionServiceImpl implements MissionService {
     private final MissionRepository missionRepository;
     private final MemberMissionRepository memberMissionRepository;
     private final RegionRepository regionRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     public List<MissionResponseDto> getMissionsByRegion(String regionName, int page) {
@@ -41,6 +44,9 @@ public class MissionServiceImpl implements MissionService {
 
     @Override
     public List<MissionResponseDto> getMyMissions(long memberId, String status, int page) {
+        memberRepository.findById(memberId)
+                .orElseThrow(() -> new GeneralException(MemberErrorStatus.MEMBER_NOT_FOUND));
+
         return memberMissionRepository.findByMemberIdAndStatus(memberId, status, PageRequest.of(page - 1, PAGE_SIZE))
                 .stream()
                 .map(this::memberMissionToDto)
