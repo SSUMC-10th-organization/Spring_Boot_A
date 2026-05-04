@@ -7,6 +7,7 @@ import lombok.Getter;
 @Builder
 public class MissionResponseDto {
     private long missionId;
+    private String storeName;
     private String detail;
     private int point;
     private String status;
