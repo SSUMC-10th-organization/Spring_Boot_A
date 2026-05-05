@@ -1,4 +1,4 @@
-package com.example.demo.review.dto;
+package com.example.umc10th.domain.review.dto;
 
 import java.time.LocalDateTime;
 

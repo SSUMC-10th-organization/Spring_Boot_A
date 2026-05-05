@@ -1,10 +1,14 @@
+package com.example.umc10th.domain.mission.exception;
+
+import com.example.umc10th.global.handler.BaseCode;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 @Getter
 @AllArgsConstructor
 public enum MissionSuccessCode implements BaseCode {
 
-    MISSION_FOUND("MISSION200_1", "미션 조회에 성공했습니다"),
-    MISSION_CREATED("MISSION201", "미션이 생성되었습니다"),
-    MISSION_COMPLETE("MISSION200_2", "미션을 완료했습니다");
+    MISSION_SUCCESS("MISSION200", "미션 성공입니다");
 
     private final String code;
     private final String message;

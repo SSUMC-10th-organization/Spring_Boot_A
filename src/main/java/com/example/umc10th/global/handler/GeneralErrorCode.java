@@ -1,3 +1,8 @@
+package com.example.umc10th.global.handler;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 @Getter
 @AllArgsConstructor
 public enum GeneralErrorCode implements BaseErrorCode {

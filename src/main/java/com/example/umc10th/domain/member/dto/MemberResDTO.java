@@ -1,13 +1,16 @@
-package com.example.demo.member.dto;
-
-import java.time.LocalDateTime;
+package com.example.umc10th.domain.member.dto;
 
 public class MemberResDTO {
 
     public record SignupResult(
             Long memberId,
+            String nickname
+    ) {}
+
+    public record MyPageResult(
+            String nickname,
             String email,
-            String name,
-            LocalDateTime createdAt
+            String phone,
+            Integer point
     ) {}
 }

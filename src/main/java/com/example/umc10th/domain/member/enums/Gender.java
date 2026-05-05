@@ -1,5 +1,5 @@
 package com.example.umc10th.domain.member.enums;
 
-public class Gender {
-
+public enum Gender {
+    MALE, FEMALE, NONE
 }

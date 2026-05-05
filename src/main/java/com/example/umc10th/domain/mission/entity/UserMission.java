@@ -1,6 +1,7 @@
-package com.example.umc10th.domain.review.entity;
+package com.example.umc10th.domain.mission.entity;
 
 import com.example.umc10th.domain.member.entity.Member;
+import com.example.umc10th.domain.mission.enums.MissionStatus;
 import com.example.umc10th.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,8 +11,8 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name = "reply")
-public class Reply extends BaseEntity {
+@Table(name = "user_mission")
+public class UserMission extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,9 +23,10 @@ public class Reply extends BaseEntity {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "review_id")
-    private Review review;
+    @JoinColumn(name = "mission_id")
+    private Mission mission;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String content;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MissionStatus status;
 }

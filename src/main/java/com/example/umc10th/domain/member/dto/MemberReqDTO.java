@@ -1,15 +1,15 @@
-package com.example.demo.member.dto;
+package com.example.umc10th.domain.member.dto;
 
-import java.time.LocalDate;
+import com.example.umc10th.domain.member.enums.Gender;
+import com.example.umc10th.domain.member.enums.SocialType;
 
 public class MemberReqDTO {
 
     public record Signup(
-            String email,
-            String password,
             String name,
-            String phoneNumber,
-            LocalDate birthDate,
-            String gender
+            String nickname,
+            String phone,
+            Gender gender,
+            SocialType socialType
     ) {}
 }

@@ -1,3 +1,10 @@
+package com.example.umc10th.global.handler;
+
+import com.example.umc10th.global.exception.GeneralException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
 @RestControllerAdvice
 public class ExceptionAdvice {
 
