@@ -22,7 +22,7 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new GeneralException(MemberErrorStatus.MEMBER_NOT_FOUND));
 
         return MemberResponseDto.builder()
-                .userId(member.getId())
+                .memberId(member.getId())
                 .name(member.getName())
                 .email(member.getEmail())
                 .point(member.getPoint() != null ? member.getPoint() : 0)
