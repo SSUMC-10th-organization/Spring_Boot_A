@@ -1,10 +1,14 @@
+package com.example.umc10th.domain.review.exception;
+
+import com.example.umc10th.global.handler.BaseCode;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 @Getter
 @AllArgsConstructor
 public enum ReviewSuccessCode implements BaseCode {
 
-    REVIEW_FOUND("REVIEW200_1", "리뷰 조회에 성공했습니다"),
-    REVIEW_CREATED("REVIEW201", "리뷰가 작성되었습니다"),
-    REVIEW_DELETED("REVIEW200_2", "리뷰가 삭제되었습니다");
+    REVIEW_SUCCESS("REVIEW200", "리뷰 성공입니다");
 
     private final String code;
     private final String message;

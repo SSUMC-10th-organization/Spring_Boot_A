@@ -7,6 +7,7 @@ build/
 
 ### 민감정보 ###
 .env
+.yml
 
 ### STS ###
 .apt_generated

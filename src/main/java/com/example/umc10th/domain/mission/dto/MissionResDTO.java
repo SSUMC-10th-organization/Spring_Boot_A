@@ -1,4 +1,4 @@
-package com.example.demo.mission.dto;
+package com.example.umc10th.domain.mission.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -1,3 +1,9 @@
+package com.example.umc10th.domain.member.exception.code;
+
+import com.example.umc10th.global.handler.BaseErrorCode;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 @Getter
 @AllArgsConstructor
 public enum MemberErrorCode implements BaseErrorCode {

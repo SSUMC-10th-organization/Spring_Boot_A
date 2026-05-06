@@ -1,3 +1,8 @@
+package com.example.umc10th.global.exception;
+
+import com.example.umc10th.global.handler.BaseErrorCode;
+import lombok.Getter;
+
 @Getter
 public class GeneralException extends RuntimeException {
 
