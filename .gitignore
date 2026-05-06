@@ -15,7 +15,7 @@ build/
 .sts4-cache
 bin/
 !**/src/main/**/bin/
-!**/src/test/**/bin/
+!**/src/tesgt/**/bin/
 
 ### IntelliJ IDEA ###
 .idea
@@ -35,5 +35,4 @@ out/
 
 ### VS Code ###
 .vscode/
-
 .env
