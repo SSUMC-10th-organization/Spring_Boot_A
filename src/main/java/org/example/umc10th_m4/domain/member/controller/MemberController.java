@@ -2,6 +2,7 @@ package org.example.umc10th_m4.domain.member.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.umc10th_m4.domain.member.dto.*;
+import org.example.umc10th_m4.domain.member.service.MemberService;
 import org.example.umc10th_m4.global.common.ApiResponse;
 import org.example.umc10th_m4.global.status.SuccessStatus;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,8 @@ import java.util.List;
 @RequestMapping("/api/members")
 public class MemberController {
 
-    // --- 회원 관련 ---
+    private final MemberService memberService;
+
     @PostMapping("/signup")
     public ApiResponse<MemberResponseDto> signUp(@RequestBody MemberSignupRequestDto request) {
         return ApiResponse.onSuccess(SuccessStatus.CREATED, null);
@@ -24,9 +26,10 @@ public class MemberController {
         return ApiResponse.onSuccess(null);
     }
 
+    // 마이 페이지 화면 쿼리
     @GetMapping("/{member_id}")
     public ApiResponse<MemberResponseDto> getProfile(@PathVariable(name = "member_id") long memberId) {
-        return ApiResponse.onSuccess(null);
+        return ApiResponse.onSuccess(memberService.getMember(memberId));
     }
 
     @DeleteMapping("/{member_id}/deletion")

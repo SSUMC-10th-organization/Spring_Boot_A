@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class MemberResponseDto {
-    private long userId;
+    private long memberId;
     private String name;
     private String email;
     private int point;

@@ -7,6 +7,8 @@ import lombok.Getter;
 @Builder
 public class ReviewResponseDto {
     private long reviewId;
+    private String storeName;
+    private String memberName;
     private int score;
     private String detail;
     private String createdAt;

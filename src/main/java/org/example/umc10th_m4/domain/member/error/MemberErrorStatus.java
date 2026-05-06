@@ -10,7 +10,8 @@ import org.springframework.http.HttpStatus;
 public enum MemberErrorStatus implements BaseStatus {
 
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER404", "존재하지 않는 회원입니다"),
-    EMAIL_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "MEMBER4001", "이미 존재하는 이메일입니다");
+    EMAIL_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "MEMBER409", "이미 존재하는 이메일입니다");
+
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;

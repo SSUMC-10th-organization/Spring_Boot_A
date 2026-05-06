@@ -19,7 +19,7 @@ public class StoreController {
     @PatchMapping("/{store_id}")
     public ApiResponse<StoreResponseDto> updateStore(
             @PathVariable(name = "store_id") long storeId,
-            @RequestBody StoreRequestDto request) {
+            @RequestBody StoreRequestDto.UpdateStoreDto request) {
         return ApiResponse.onSuccess(null);
     }
 }

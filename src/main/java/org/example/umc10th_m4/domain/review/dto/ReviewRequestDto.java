@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class ReviewRequestDto {
+    private long memberId;
     private int score;
     private String detail;
 }
