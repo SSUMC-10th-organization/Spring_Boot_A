@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GeneralExceptionAdvice {
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(ProjectException.class)
     public ResponseEntity<ApiResponse<Void>> handleMemberException(
             ProjectException e
     ){
