@@ -13,6 +13,7 @@ import org.example.umc10th_m4.domain.region.entity.Region;
 import org.example.umc10th_m4.domain.region.error.RegionErrorStatus;
 import org.example.umc10th_m4.domain.region.repository.RegionRepository;
 import org.example.umc10th_m4.global.common.PageResponse;
+import org.example.umc10th_m4.global.status.ErrorStatus;
 import org.example.umc10th_m4.global.status.GeneralException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -48,6 +49,10 @@ public class MissionServiceImpl implements MissionService {
 
     @Override
     public PageResponse<MissionResponseDto> getMyOngoingMissions(MyMissionRequestDto request, int page, int pageSize) {
+        // page, pageSize 유효성 검사
+        if (page < 1) throw new GeneralException(ErrorStatus.BAD_REQUEST);
+        if (pageSize < 1) throw new GeneralException(ErrorStatus.BAD_REQUEST);
+
         memberRepository.findById(request.getMemberId())
                 .orElseThrow(() -> new GeneralException(MemberErrorStatus.MEMBER_NOT_FOUND));
 
