@@ -2,6 +2,7 @@ package org.example.umc10th_m4.domain.mission.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.umc10th_m4.domain.mission.dto.MissionResponseDto;
+import org.example.umc10th_m4.domain.mission.dto.MyMissionRequestDto;
 import org.example.umc10th_m4.domain.mission.entity.MemberMission;
 import org.example.umc10th_m4.domain.mission.entity.Mission;
 import org.example.umc10th_m4.domain.mission.repository.MemberMissionRepository;
@@ -11,8 +12,12 @@ import org.example.umc10th_m4.domain.member.repository.MemberRepository;
 import org.example.umc10th_m4.domain.region.entity.Region;
 import org.example.umc10th_m4.domain.region.error.RegionErrorStatus;
 import org.example.umc10th_m4.domain.region.repository.RegionRepository;
+import org.example.umc10th_m4.global.common.PageResponse;
+import org.example.umc10th_m4.global.status.ErrorStatus;
 import org.example.umc10th_m4.global.status.GeneralException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,14 +48,21 @@ public class MissionServiceImpl implements MissionService {
     }
 
     @Override
-    public List<MissionResponseDto> getMyMissions(long memberId, String status, int page) {
-        memberRepository.findById(memberId)
+    public PageResponse<MissionResponseDto> getMyOngoingMissions(MyMissionRequestDto request, int page, int pageSize) {
+        // page, pageSize 유효성 검사
+        if (page < 1) throw new GeneralException(ErrorStatus.BAD_REQUEST);
+        if (pageSize < 1) throw new GeneralException(ErrorStatus.BAD_REQUEST);
+
+        memberRepository.findById(request.getMemberId())
                 .orElseThrow(() -> new GeneralException(MemberErrorStatus.MEMBER_NOT_FOUND));
 
-        return memberMissionRepository.findByMemberIdAndStatus(memberId, status, PageRequest.of(page - 1, PAGE_SIZE))
-                .stream()
-                .map(this::memberMissionToDto)
-                .collect(Collectors.toList());
+        Page<MemberMission> result = memberMissionRepository.findByMemberIdAndStatus(
+                request.getMemberId(),
+                "ONGOING",
+                PageRequest.of(page - 1, pageSize, Sort.by(Sort.Direction.DESC, "id")));
+
+        Page<MissionResponseDto> dtoPage = result.map(this::memberMissionToDto);
+        return PageResponse.from(dtoPage);
     }
 
     private MissionResponseDto missionToDto(Mission mission) {

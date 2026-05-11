@@ -11,8 +11,12 @@ import org.example.umc10th_m4.domain.review.repository.ReviewRepository;
 import org.example.umc10th_m4.domain.store.entity.Store;
 import org.example.umc10th_m4.domain.store.error.StoreErrorStatus;
 import org.example.umc10th_m4.domain.store.repository.StoreRepository;
+import org.example.umc10th_m4.global.common.CursorPageResponse;
+import org.example.umc10th_m4.global.status.ErrorStatus;
 import org.example.umc10th_m4.global.status.GeneralException;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,6 +63,71 @@ public class ReviewServiceImpl implements ReviewService {
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CursorPageResponse<ReviewResponseDto> getMyReviews(long memberId, String query, String cursor, int size) {
+        // size 유효성 검사
+        if (size < 1) throw new GeneralException(ErrorStatus.BAD_REQUEST);
+
+        memberRepository.findById(memberId)
+                .orElseThrow(() -> new GeneralException(MemberErrorStatus.MEMBER_NOT_FOUND));
+
+        Pageable pageable = PageRequest.of(0, size);
+        Slice<Review> slice;
+
+        try {
+            if ("score".equals(query)) {
+                if (cursor != null) {
+                    // cursor 형식: "score:{lastScore}:{lastId}"
+                    String[] parts = cursor.split(":");
+                    if (parts.length != 3 || !"score".equals(parts[0]))
+                        throw new GeneralException(ErrorStatus.BAD_REQUEST);
+                    int lastScore = Integer.parseInt(parts[1]);
+                    long lastId = Long.parseLong(parts[2]);
+                    slice = reviewRepository.findByMemberIdWithScoreCursor(memberId, lastScore, lastId, pageable);
+                } else {
+                    slice = reviewRepository.findByMemberIdOrderByScoreDescIdDesc(memberId, pageable);
+                }
+            } else {
+                // 기본값: id 순
+                if (cursor != null) {
+                    // cursor 형식: "id:{lastId}"
+                    String[] parts = cursor.split(":");
+                    if (parts.length != 2 || !"id".equals(parts[0]))
+                        throw new GeneralException(ErrorStatus.BAD_REQUEST);
+                    long lastId = Long.parseLong(parts[1]);
+                    slice = reviewRepository.findByMemberIdAndIdLessThan(memberId, lastId, pageable);
+                } else {
+                    slice = reviewRepository.findByMemberIdOrderByIdDesc(memberId, pageable);
+                }
+            }
+        } catch (NumberFormatException e) {
+            // 커서 값이 숫자로 파싱되지 않는 경우
+            throw new GeneralException(ErrorStatus.BAD_REQUEST);
+        }
+
+        List<ReviewResponseDto> content = slice.getContent().stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+
+        String nextCursor = null;
+        if (slice.hasNext() && !content.isEmpty()) {
+            Review last = slice.getContent().get(slice.getContent().size() - 1);
+            if ("score".equals(query)) {
+                nextCursor = "score:" + last.getScore() + ":" + last.getId();
+            } else {
+                nextCursor = "id:" + last.getId();
+            }
+        }
+
+        return CursorPageResponse.<ReviewResponseDto>builder()
+                .content(content)
+                .hasNext(slice.hasNext())
+                .nextCursor(nextCursor)
+                .size(content.size())
+                .build();
     }
 
     private ReviewResponseDto toDto(Review review) {
