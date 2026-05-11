@@ -25,13 +25,16 @@ public class MissionService {
     private final UserMissionRepository userMissionRepository;
     private final MemberRepository memberRepository;
 
-    // 내 미션 목록 조회 (진행중, 진행완료)
-    public MissionResDTO.MissionListResult getMissionList(Long memberId, MissionStatus status, int page) {
+    // 내 미션 목록 조회 (오프셋 기반)
+    public MissionResDTO.MissionListResult getMissionList(
+            Long memberId, MissionStatus status, int page) {
+
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다."));
 
+        PageRequest pageRequest = PageRequest.of(page, 10);
         Page<UserMission> userMissions = userMissionRepository
-                .findByMemberAndStatus(member, status, PageRequest.of(page, 10));
+                .findByMemberAndStatus(member, status, pageRequest);
 
         List<MissionResDTO.MissionDetail> missionDetails = userMissions.stream()
                 .map(um -> new MissionResDTO.MissionDetail(
@@ -42,7 +45,14 @@ public class MissionService {
                         um.getStatus().name()
                 )).toList();
 
-        return new MissionResDTO.MissionListResult(missionDetails, (int) userMissions.getTotalElements());
+        return new MissionResDTO.MissionListResult(
+                missionDetails,
+                userMissions.getNumber(),
+                userMissions.getSize(),
+                userMissions.getTotalElements(),
+                userMissions.getTotalPages(),
+                userMissions.hasNext()
+        );
     }
 
     // 미션 완료 처리
@@ -60,8 +70,9 @@ public class MissionService {
 
     // 홈화면 - 특정 지역 미션 목록 조회
     public MissionResDTO.MissionListResult getHomeMissions(Long locationId, int page) {
+        PageRequest pageRequest = PageRequest.of(page, 10);
         Page<Mission> missions = missionRepository
-                .findMissionsByLocation(locationId, PageRequest.of(page, 10));
+                .findMissionsByLocation(locationId, pageRequest);
 
         List<MissionResDTO.MissionDetail> missionDetails = missions.stream()
                 .map(m -> new MissionResDTO.MissionDetail(
@@ -72,6 +83,13 @@ public class MissionService {
                         null
                 )).toList();
 
-        return new MissionResDTO.MissionListResult(missionDetails, (int) missions.getTotalElements());
+        return new MissionResDTO.MissionListResult(
+                missionDetails,
+                missions.getNumber(),
+                missions.getSize(),
+                missions.getTotalElements(),
+                missions.getTotalPages(),
+                missions.hasNext()
+        );
     }
 }

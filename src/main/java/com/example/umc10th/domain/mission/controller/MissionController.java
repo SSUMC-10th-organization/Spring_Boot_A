@@ -22,7 +22,10 @@ public class MissionController {
             @RequestParam MissionStatus status,
             @RequestParam(defaultValue = "0") int page
     ) {
-        return ApiResponse.onSuccess(SuccessStatus._OK, missionService.getMissionList(memberId, status, page));
+        return ApiResponse.onSuccess(
+                SuccessStatus._OK,
+                missionService.getMissionList(memberId, status, page)
+        );
     }
 
     @PatchMapping("/me/missions/{missionId}")
