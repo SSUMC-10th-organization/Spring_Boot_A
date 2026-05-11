@@ -2,16 +2,27 @@ package com.example.umc10th.domain.user.dto;
 
 import com.example.umc10th.domain.mission.enums.MissionStatus;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import java.util.List;
 
 public class UserResDTO {
 
+    // 마이페이지
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class MyPageRes {
+        private String nickname;
+        private String email;
+        private String phoneNum;
+        private Integer point;
+    }
+
+    // 기존 컨트롤러 호환용
     @Getter
     @AllArgsConstructor
     public static class UserInfoRes {
         private Long userId;
-        private String name;
         private String nickname;
         private Integer point;
     }
@@ -41,10 +52,10 @@ public class UserResDTO {
     }
 
     @Getter
+    @Builder
     @AllArgsConstructor
     public static class JoinRes {
         private Long userId;
-        private String name;
         private String email;
     }
 }
