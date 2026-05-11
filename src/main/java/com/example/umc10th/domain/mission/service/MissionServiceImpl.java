@@ -1,5 +1,7 @@
 package com.example.umc10th.domain.mission.service;
 
+import com.example.umc10th.domain.mission.converter.MissionConverter;
+import com.example.umc10th.domain.mission.dto.MemberMissionResDTO;
 import com.example.umc10th.domain.mission.dto.MissionResDTO;
 import com.example.umc10th.domain.mission.entity.Mission;
 import com.example.umc10th.domain.mission.entity.mapping.UserMission;
@@ -9,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +44,23 @@ public class MissionServiceImpl implements MissionService {
                 .missions(items)
                 .hasNext(result.hasNext())
                 .build();
+    }
+
+    @Override
+    public MissionResDTO.OffsetPaginationRes<MemberMissionResDTO.OngoingMissionItem> getMissions(
+            Long memberId, Integer pageSize, Integer pageNumber, String sort) {
+        Sort sorting = (sort != null && !sort.isBlank())
+                ? Sort.by(Sort.Direction.DESC, sort)
+                : Sort.by(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sorting);
+
+        Page<UserMission> page = userMissionRepository.findOngoingMissionsByUserId(memberId, pageable);
+
+        List<MemberMissionResDTO.OngoingMissionItem> items = page.getContent().stream()
+                .map(MissionConverter::toOngoingMissionItem)
+                .toList();
+
+        return MissionConverter.toPagination(items, pageNumber, pageSize);
     }
 
     @Override

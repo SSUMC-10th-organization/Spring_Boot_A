@@ -22,6 +22,15 @@ public interface UserMissionRepository extends JpaRepository<UserMission, Long> 
             Pageable pageable
     );
 
+    @Query("SELECT um FROM UserMission um " +
+            "JOIN FETCH um.mission m " +
+            "JOIN FETCH m.restaurant r " +
+            "WHERE um.user.id = :userId AND um.status = 'ONGOING'")
+    Page<UserMission> findOngoingMissionsByUserId(
+            @Param("userId") Long userId,
+            Pageable pageable
+    );
+
     // 홈 화면: 특정 지역에서 유저가 아직 도전하지 않은 미션 목록
     @Query("SELECT m FROM Mission m " +
             "JOIN FETCH m.restaurant r " +

@@ -9,6 +9,7 @@ import com.example.umc10th.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,7 +48,7 @@ public class UserController {
     @PatchMapping("/me/missions/{userMissionId}")
     public ApiResponse<UserResDTO.MissionChallengeRes> successMission(
             @PathVariable Long userMissionId,
-            @RequestBody UserReqDTO.MissionSuccessReq request
+            @Valid @RequestBody UserReqDTO.MissionSuccessReq request
     ) {
         return ApiResponse.onSuccess(UserSuccessCode.USER_MISSION_SUCCESS_OK, null);
     }

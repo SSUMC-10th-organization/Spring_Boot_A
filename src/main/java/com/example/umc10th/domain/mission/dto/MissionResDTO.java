@@ -45,4 +45,13 @@ public class MissionResDTO {
         private List<HomeMissionItem> missions;
         private boolean hasNext;
     }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class OffsetPaginationRes<T> {
+        private List<T> data;
+        private Integer pageNumber;
+        private Integer pageSize;
+    }
 }
