@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -34,6 +35,14 @@ public class GeneralExceptionAdvice {
         );
         return ResponseEntity.status(GeneralErrorCode.BAD_REQUEST.getStatus())
                 .body(ApiResponse.onFailure(GeneralErrorCode.BAD_REQUEST, errors));
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleNoResourceFoundException(
+            NoResourceFoundException e
+    ) {
+        return ResponseEntity.status(GeneralErrorCode.NOT_FOUND.getStatus())
+                .body(ApiResponse.onFailure(GeneralErrorCode.NOT_FOUND));
     }
 
     @ExceptionHandler(Exception.class)
