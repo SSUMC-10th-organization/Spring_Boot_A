@@ -6,6 +6,7 @@ import com.example.umc.global.apiPayload.code.ReasonDTO;
 import com.example.umc.global.apiPayload.code.status.GeneralErrorCode;
 import com.example.umc.global.apiPayload.exception.ProjectException;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -31,6 +32,11 @@ public class GeneralExceptionAdvice {
                 errors.putIfAbsent(error.getField(), error.getDefaultMessage())
         );
         return handleExceptionInternal(GeneralErrorCode.REQUEST_BODY_INVALID, errors);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiResponse<Object>> handleHttpMessageNotReadableException() {
+        return handleExceptionInternal(GeneralErrorCode.REQUEST_BODY_INVALID, null);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

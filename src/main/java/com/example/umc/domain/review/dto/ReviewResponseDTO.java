@@ -48,4 +48,28 @@ public class ReviewResponseDTO {
         private String content;
         private LocalDateTime createdAt;
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MyReviewCursorListResponse {
+        private List<MyReviewPreviewResponse> reviews;
+        private Integer listSize;
+        private Boolean hasNext;
+        private String nextCursor;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MyReviewPreviewResponse {
+        private Long reviewId;
+        private String storeName;
+        private String missionTitle;
+        private Integer rating;
+        private String content;
+        private LocalDateTime createdAt;
+    }
 }

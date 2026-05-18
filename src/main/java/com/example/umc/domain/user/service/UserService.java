@@ -46,4 +46,19 @@ public class UserService {
         );
         return UserConverter.toUserMissionPreviewListResponse(userMissions);
     }
+
+    public UserResponseDTO.UserMissionPreviewListResponse getMyInProgressMissions(
+            UserRequestDTO.MyInProgressMissionRequest request
+    ) {
+        if (!userRepository.existsById(request.getUserId())) {
+            throw new UserException(UserErrorCode.USER_NOT_FOUND);
+        }
+
+        Page<UserMission> userMissions = userMissionRepository.findUserMissionsByStatus(
+                request.getUserId(),
+                UserMissionStatus.IN_PROGRESS,
+                PageRequest.of(request.getPageNumber(), request.getPageSize())
+        );
+        return UserConverter.toUserMissionPreviewListResponse(userMissions);
+    }
 }

@@ -11,7 +11,7 @@ import java.time.LocalDate;
 
 public interface MissionRepository extends JpaRepository<Mission, Long> {
 
-    @Query("""
+    @Query(value = """
             select m
             from Mission m
             join fetch m.store s
@@ -19,7 +19,15 @@ public interface MissionRepository extends JpaRepository<Mission, Long> {
             where s.address like concat('%', :region, '%')
               and (m.deadline is null or m.deadline >= :today)
               and m.deletedAt is null
-            """)
+            """,
+            countQuery = """
+                    select count(m)
+                    from Mission m
+                    join m.store s
+                    where s.address like concat('%', :region, '%')
+                      and (m.deadline is null or m.deadline >= :today)
+                      and m.deletedAt is null
+                    """)
     Page<Mission> findAvailableMissionsByRegion(
             @Param("region") String region,
             @Param("today") LocalDate today,

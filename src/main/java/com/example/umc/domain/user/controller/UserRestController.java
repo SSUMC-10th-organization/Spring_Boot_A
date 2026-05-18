@@ -45,4 +45,13 @@ public class UserRestController {
         UserResponseDTO.UserMissionPreviewListResponse response = userService.getMyMissions(userId, status, page);
         return ApiResponse.of(UserSuccessCode.USER_MISSIONS_FOUND, response);
     }
+
+    @Operation(summary = "내가 진행중인 미션 조회 API", description = "Request Body의 유저 ID로 진행중인 미션을 오프셋 기반 페이지네이션으로 조회합니다.")
+    @PostMapping("/missions/in-progress")
+    public ApiResponse<UserResponseDTO.UserMissionPreviewListResponse> getMyInProgressMissions(
+            @RequestBody @Valid UserRequestDTO.MyInProgressMissionRequest request
+    ) {
+        UserResponseDTO.UserMissionPreviewListResponse response = userService.getMyInProgressMissions(request);
+        return ApiResponse.of(UserSuccessCode.IN_PROGRESS_MISSIONS_FOUND, response);
+    }
 }
