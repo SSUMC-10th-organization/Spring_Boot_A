@@ -50,7 +50,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .build();
 
         Review saved = reviewRepository.save(review);
-        return toDto(saved);
+        return ReviewResponseDto.from(saved);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         return reviewRepository.findByStoreId(storeId, PageRequest.of(page - 1, PAGE_SIZE))
                 .stream()
-                .map(this::toDto)
+                .map(ReviewResponseDto::from)
                 .collect(Collectors.toList());
     }
 
@@ -69,7 +69,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional(readOnly = true)
     public CursorPageResponse<ReviewResponseDto> getMyReviews(long memberId, String query, String cursor, int size) {
         // size 유효성 검사
-        if (size < 1) throw new GeneralException(ErrorStatus.BAD_REQUEST);
+        if (size < 1 || size > 100) throw new GeneralException(ErrorStatus.BAD_REQUEST);
 
         memberRepository.findById(memberId)
                 .orElseThrow(() -> new GeneralException(MemberErrorStatus.MEMBER_NOT_FOUND));
@@ -109,7 +109,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         List<ReviewResponseDto> content = slice.getContent().stream()
-                .map(this::toDto)
+                .map(ReviewResponseDto::from)
                 .collect(Collectors.toList());
 
         String nextCursor = null;
@@ -130,14 +130,4 @@ public class ReviewServiceImpl implements ReviewService {
                 .build();
     }
 
-    private ReviewResponseDto toDto(Review review) {
-        return ReviewResponseDto.builder()
-                .reviewId(review.getId())
-                .storeName(review.getStore().getName())
-                .memberName(review.getMember().getName())
-                .score(review.getScore())
-                .detail(review.getDetail())
-                .createdAt(review.getCreatedAt() != null ? review.getCreatedAt().toString() : null)
-                .build();
-    }
 }

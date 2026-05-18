@@ -43,7 +43,7 @@ public class MissionServiceImpl implements MissionService {
 
         return missionRepository.findByRegionId(region.getId(), PageRequest.of(page - 1, PAGE_SIZE))
                 .stream()
-                .map(this::missionToDto)
+                .map(MissionResponseDto::from)
                 .collect(Collectors.toList());
     }
 
@@ -61,27 +61,8 @@ public class MissionServiceImpl implements MissionService {
                 "ONGOING",
                 PageRequest.of(page - 1, pageSize, Sort.by(Sort.Direction.DESC, "id")));
 
-        Page<MissionResponseDto> dtoPage = result.map(this::memberMissionToDto);
+        Page<MissionResponseDto> dtoPage = result.map(MissionResponseDto::from);
         return PageResponse.from(dtoPage);
     }
 
-    private MissionResponseDto missionToDto(Mission mission) {
-        return MissionResponseDto.builder()
-                .missionId(mission.getId())
-                .storeName(mission.getStore().getName())
-                .detail(mission.getDetail())
-                .point(mission.getPoint())
-                .build();
-    }
-
-    private MissionResponseDto memberMissionToDto(MemberMission mm) {
-        return MissionResponseDto.builder()
-                .missionId(mm.getMission().getId())
-                .storeName(mm.getStore().getName())
-                .detail(mm.getMission().getDetail())
-                .point(mm.getMission().getPoint())
-                .status(mm.getStatus())
-                .count(mm.getMissionCount() != null ? mm.getMissionCount() : 0)
-                .build();
-    }
 }

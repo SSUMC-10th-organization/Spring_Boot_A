@@ -15,8 +15,8 @@ import java.util.List;
 @RequestMapping("/api/regions")
 public class RegionController {
 
-    @GetMapping
-    public ApiResponse<List<RegionResponseDto>> getRegions() {
-        return ApiResponse.onSuccess(null);
-    }
+//    @GetMapping
+//    public ApiResponse<List<RegionResponseDto>> getRegions() {
+//        return ApiResponse.onSuccess(null);
+//    }
 }

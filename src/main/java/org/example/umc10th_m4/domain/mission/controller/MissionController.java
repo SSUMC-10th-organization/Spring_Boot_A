@@ -27,10 +27,10 @@ public class MissionController {
         return ApiResponse.onSuccess(missionService.getMissionsByRegion(region, page));
     }
 
-    @GetMapping("/{mission_id}")
-    public ApiResponse<MissionResponseDto> getMissionDetail(@PathVariable(name = "mission_id") long missionId) {
-        return ApiResponse.onSuccess(null);
-    }
+//    @GetMapping("/{mission_id}")
+//    public ApiResponse<MissionResponseDto> getMissionDetail(@PathVariable(name = "mission_id") long missionId) {
+//        return ApiResponse.onSuccess(null);
+//    }
 
     // 내가 진행중인 미션 조회 (오프셋 기반 페이지네이션, memberId는 RequestBody에서 받음)
     @GetMapping("/mine")
@@ -41,15 +41,15 @@ public class MissionController {
         return ApiResponse.onSuccess(missionService.getMyOngoingMissions(request, page, pageSize));
     }
 
-    @GetMapping("/{mission_id}/progress")
-    public ApiResponse<MissionResponseDto> getMissionProgress(@PathVariable(name = "mission_id") long missionId) {
-        return ApiResponse.onSuccess(null);
-    }
-
-    @PostMapping("/{mission_id}")
-    public ApiResponse<MissionResponseDto> performMission(
-            @PathVariable(name = "mission_id") long missionId,
-            @RequestBody MissionRequestDto request) {
-        return ApiResponse.onSuccess(null);
-    }
+//    @GetMapping("/{mission_id}/progress")
+//    public ApiResponse<MissionResponseDto> getMissionProgress(@PathVariable(name = "mission_id") long missionId) {
+//        return ApiResponse.onSuccess(null);
+//    }
+//
+//    @PostMapping("/{mission_id}")
+//    public ApiResponse<MissionResponseDto> performMission(
+//            @PathVariable(name = "mission_id") long missionId,
+//            @RequestBody MissionRequestDto request) {
+//        return ApiResponse.onSuccess(null);
+//    }
 }
