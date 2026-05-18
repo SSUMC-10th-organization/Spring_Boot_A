@@ -3,6 +3,7 @@ package com.example.umc.domain.user.converter;
 import com.example.umc.domain.user.dto.UserResponseDTO;
 import com.example.umc.domain.user.entity.User;
 import com.example.umc.domain.userMission.entity.UserMission;
+import com.example.umc.domain.user.dto.UserRequestDTO;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -20,6 +21,26 @@ public class UserConverter {
                 .gender(user.getGender() == null ? null : user.getGender().name())
                 .address(user.getAddress())
                 .points(user.getPoints())
+                .build();
+    }
+
+    public static User toUser(UserRequestDTO.SignUpRequest request, String encodedPassword) {
+        return User.builder()
+                .email(request.getEmail())
+                .password(encodedPassword)
+                .name(request.getName())
+                .birthDate(request.getBirthDate())
+                .gender(request.getGender())
+                .address(request.getAddress())
+                .build();
+    }
+
+    public static UserResponseDTO.SignUpResponse toSignUpResponse(User user) {
+        return UserResponseDTO.SignUpResponse.builder()
+                .userId(user.getId())
+                .email(user.getEmail())
+                .name(user.getName())
+                .createdAt(user.getCreatedAt())
                 .build();
     }
 

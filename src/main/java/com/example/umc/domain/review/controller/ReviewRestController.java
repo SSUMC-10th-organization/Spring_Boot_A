@@ -43,4 +43,13 @@ public class ReviewRestController {
         ReviewResponseDTO.StoreReviewPreviewListResponse response = reviewService.getStoreReviews(storeId, page);
         return ApiResponse.of(ReviewSuccessCode.STORE_REVIEWS_FOUND, response);
     }
+
+    @Operation(summary = "내가 작성한 리뷰 목록 조회 API", description = "사진을 제외한 리뷰 목록을 ID순 또는 별점순 커서 기반 페이지네이션으로 조회합니다.")
+    @PostMapping("/my")
+    public ApiResponse<ReviewResponseDTO.MyReviewCursorListResponse> getMyReviews(
+            @RequestBody @Valid ReviewRequestDTO.MyReviewCursorRequest request
+    ) {
+        ReviewResponseDTO.MyReviewCursorListResponse response = reviewService.getMyReviews(request);
+        return ApiResponse.of(ReviewSuccessCode.MY_REVIEWS_FOUND, response);
+    }
 }

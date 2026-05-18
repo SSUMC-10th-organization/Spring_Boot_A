@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface UserMissionRepository extends JpaRepository<UserMission, Long> {
 
-    @Query("""
+    @Query(value = """
             select um
             from UserMission um
             join fetch um.mission m
@@ -18,7 +18,15 @@ public interface UserMissionRepository extends JpaRepository<UserMission, Long> 
             where um.user.id = :userId
               and um.status = :status
               and um.deletedAt is null
-            """)
+            order by um.id desc
+            """,
+            countQuery = """
+                    select count(um)
+                    from UserMission um
+                    where um.user.id = :userId
+                      and um.status = :status
+                      and um.deletedAt is null
+                    """)
     Page<UserMission> findUserMissionsByStatus(
             @Param("userId") Long userId,
             @Param("status") UserMissionStatus status,
