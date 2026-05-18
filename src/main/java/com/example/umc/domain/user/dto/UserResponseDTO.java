@@ -56,4 +56,15 @@ public class UserResponseDTO {
         private LocalDateTime acceptedAt;
         private LocalDateTime completedAt;
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SignUpResponse {
+        private Long userId;
+        private String email;
+        private String name;
+        private LocalDateTime createdAt;
+    }
 }

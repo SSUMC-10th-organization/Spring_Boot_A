@@ -13,6 +13,7 @@ import com.example.umc.domain.userMission.repository.UserMissionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,17 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMissionRepository userMissionRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Transactional
+    public UserResponseDTO.SignUpResponse signUp(UserRequestDTO.SignUpRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new UserException(UserErrorCode.EMAIL_ALREADY_EXISTS);
+        }
+
+        User user = UserConverter.toUser(request, passwordEncoder.encode(request.getPassword()));
+        return UserConverter.toSignUpResponse(userRepository.save(user));
+    }
 
     public UserResponseDTO.MyPageResponse getMyPage(UserRequestDTO.MyPageRequest request) {
         User user = userRepository.findById(request.getId())
