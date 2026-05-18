@@ -19,6 +19,11 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "member")
 public class Member extends BaseEntity {
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,7 +64,4 @@ public class Member extends BaseEntity {
     @Builder.Default                                         // ← 추가
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Reply> replyList = new ArrayList<>();
-
-    @Column(length = 50)
-    private String email;
 }

@@ -10,6 +10,8 @@ public class MemberReqDTO {
             String nickname,
             String phone,
             Gender gender,
-            SocialType socialType
+            SocialType socialType,
+            String email,
+            String password
     ) {}
 }

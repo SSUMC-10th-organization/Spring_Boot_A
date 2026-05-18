@@ -21,6 +21,7 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(Exception.class)
     public ApiResponse<?> handleException(Exception e) {
+        e.printStackTrace();  // 임시 로그
         return ApiResponse.onFailure(GeneralErrorCode.INTERNAL_ERROR, null);
     }
 
