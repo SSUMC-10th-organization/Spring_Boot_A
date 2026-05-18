@@ -11,15 +11,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/stores")
 public class StoreController {
 
-    @GetMapping("/{store_id}")
-    public ApiResponse<StoreResponseDto> getStore(@PathVariable(name = "store_id") long storeId) {
-        return ApiResponse.onSuccess(null);
-    }
-
-    @PatchMapping("/{store_id}")
-    public ApiResponse<StoreResponseDto> updateStore(
-            @PathVariable(name = "store_id") long storeId,
-            @RequestBody StoreRequestDto.UpdateStoreDto request) {
-        return ApiResponse.onSuccess(null);
-    }
+//    @GetMapping("/{storeId}")
+//    public ApiResponse<StoreResponseDto> getStore(@PathVariable(name = "storeId") long storeId) {
+//        return ApiResponse.onSuccess(null);
+//    }
+//
+//    @PatchMapping("/{storeId}")
+//    public ApiResponse<StoreResponseDto> updateStore(
+//            @PathVariable(name = "storeId") long storeId,
+//            @RequestBody StoreRequestDto.UpdateStoreDto request) {
+//        return ApiResponse.onSuccess(null);
+//    }
 }

@@ -1,10 +1,15 @@
 -- region
 INSERT IGNORE INTO region (name) VALUES ('서울'), ('경기'), ('부산');
 
--- member
-INSERT IGNORE INTO member (email, password, name, point, status, number, likes) VALUES
-    ('test1@test.com', 'password1', '홍길동', 100, 'ACTIVE', '010-1234-5678', 5),
-    ('test2@test.com', 'password2', '김철수', 50,  'ACTIVE', '010-9999-0000', 2);
+-- member (password: test1234 / test5678 - BCrypt 해시)
+INSERT IGNORE INTO member (email, password, name, point, status, number, likes, gender, birth_date, address, detail_address) VALUES
+    ('test1@test.com', '$2b$10$WUdgLWJk9GMYGpaGn0L.yObP.0Z8XGOXXVVPDs11.1XVM/wTd0YjW', '홍길동', 100, 'ACTIVE', '010-1234-5678', 5, '남', '1995-03-15', '서울 강남구 테헤란로 1', '101호'),
+    ('test2@test.com', '$2b$10$bWidbrHXzEZlmjDixi1ZeOM0iHaaUR9CDnidgn94UQ8uNiA//04EW', '김철수', 50,  'ACTIVE', '010-9999-0000', 2, '남', '1998-07-22', '경기 수원시 팔달구 3', '202호');
+
+-- 음식 선호
+INSERT IGNORE INTO member_food_preference (member_id, food_type) VALUES
+    (1, '한식'), (1, '고기/구이'), (1, '치킨'),
+    (2, '일식'), (2, '분식'), (2, '디저트');
 
 -- store (region_id: 서울=1, 경기=2, 부산=3)
 INSERT IGNORE INTO store (name, location, region_id) VALUES

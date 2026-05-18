@@ -18,29 +18,29 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     // 리뷰 작성 쿼리
-    @PostMapping("/stores/{store_id}/reviews")
+    @PostMapping("/stores/{storeId}/reviews")
     public ApiResponse<ReviewResponseDto> addReview(
-            @PathVariable(name = "store_id") long storeId,
+            @PathVariable(name = "storeId") long storeId,
             @RequestBody ReviewRequestDto request) {
         return ApiResponse.onSuccess(SuccessStatus.CREATED, reviewService.addReview(storeId, request));
     }
 
-    @GetMapping("/stores/{store_id}/reviews")
+    @GetMapping("/stores/{storeId}/reviews")
     public ApiResponse<List<ReviewResponseDto>> getReviews(
-            @PathVariable(name = "store_id") long storeId,
+            @PathVariable(name = "storeId") long storeId,
             @RequestParam(name = "page", required = false, defaultValue = "1") int page) {
         return ApiResponse.onSuccess(reviewService.getReviews(storeId, page));
     }
 
-    @PatchMapping("/reviews/{review_id}")
-    public ApiResponse<ReviewResponseDto> updateReview(
-            @PathVariable(name = "review_id") long reviewId,
-            @RequestBody ReviewRequestDto request) {
-        return ApiResponse.onSuccess(null);
-    }
-
-    @DeleteMapping("/reviews/{review_id}")
-    public ApiResponse<String> deleteReview(@PathVariable(name = "review_id") long reviewId) {
-        return ApiResponse.onSuccess(null);
-    }
+//    @PatchMapping("/reviews/{reviewId}")
+//    public ApiResponse<ReviewResponseDto> updateReview(
+//            @PathVariable(name = "reviewId") long reviewId,
+//            @RequestBody ReviewRequestDto request) {
+//        return ApiResponse.onSuccess(null);
+//    }
+//
+//    @DeleteMapping("/reviews/{reviewId}")
+//    public ApiResponse<String> deleteReview(@PathVariable(name = "reviewId") long reviewId) {
+//        return ApiResponse.onSuccess(null);
+//    }
 }
