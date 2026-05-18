@@ -1,10 +1,13 @@
 package org.example.umc10th_m4.domain.mission.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.umc10th_m4.domain.mission.dto.MissionRequestDto;
 import org.example.umc10th_m4.domain.mission.dto.MissionResponseDto;
+import org.example.umc10th_m4.domain.mission.dto.MyMissionRequestDto;
 import org.example.umc10th_m4.domain.mission.service.MissionService;
 import org.example.umc10th_m4.global.common.ApiResponse;
+import org.example.umc10th_m4.global.common.PageResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,13 +32,13 @@ public class MissionController {
 //        return ApiResponse.onSuccess(null);
 //    }
 
-    // 내가 진행중/완료한 미션 모아보기 (페이징)
+    // 내가 진행중인 미션 조회 (오프셋 기반 페이지네이션, memberId는 RequestBody에서 받음)
     @GetMapping("/mine")
-    public ApiResponse<List<MissionResponseDto>> getMyMissions(
-            @RequestParam(name = "member_id") long memberId,
-            @RequestParam(name = "status") String status,
-            @RequestParam(name = "page", required = false, defaultValue = "1") int page) {
-        return ApiResponse.onSuccess(missionService.getMyMissions(memberId, status, page));
+    public ApiResponse<PageResponse<MissionResponseDto>> getMyOngoingMissions(
+            @RequestBody @Valid MyMissionRequestDto request,
+            @RequestParam(name = "page", required = false, defaultValue = "1") int page,
+            @RequestParam(name = "pageSize", required = false, defaultValue = "10") int pageSize) {
+        return ApiResponse.onSuccess(missionService.getMyOngoingMissions(request, page, pageSize));
     }
 
 //    @GetMapping("/{mission_id}/progress")

@@ -68,6 +68,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional(readOnly = true)
     public CursorPageResponse<ReviewResponseDto> getMyReviews(long memberId, String query, String cursor, int size) {
+        // size 유효성 검사
         if (size < 1) throw new GeneralException(ErrorStatus.BAD_REQUEST);
 
         memberRepository.findById(memberId)
@@ -79,6 +80,7 @@ public class ReviewServiceImpl implements ReviewService {
         try {
             if ("score".equals(query)) {
                 if (cursor != null) {
+                    // cursor 형식: "score:{lastScore}:{lastId}"
                     String[] parts = cursor.split(":");
                     if (parts.length != 3 || !"score".equals(parts[0]))
                         throw new GeneralException(ErrorStatus.BAD_REQUEST);
@@ -89,7 +91,9 @@ public class ReviewServiceImpl implements ReviewService {
                     slice = reviewRepository.findByMemberIdOrderByScoreDescIdDesc(memberId, pageable);
                 }
             } else {
+                // 기본값: id 순
                 if (cursor != null) {
+                    // cursor 형식: "id:{lastId}"
                     String[] parts = cursor.split(":");
                     if (parts.length != 2 || !"id".equals(parts[0]))
                         throw new GeneralException(ErrorStatus.BAD_REQUEST);
@@ -100,6 +104,7 @@ public class ReviewServiceImpl implements ReviewService {
                 }
             }
         } catch (NumberFormatException e) {
+            // 커서 값이 숫자로 파싱되지 않는 경우
             throw new GeneralException(ErrorStatus.BAD_REQUEST);
         }
 

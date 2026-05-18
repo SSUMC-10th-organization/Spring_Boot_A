@@ -15,6 +15,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    // GeneralException: 도메인 에러 (404, 400 등) → HTTP 상태코드 함께 반환
     @ExceptionHandler(GeneralException.class)
     public ResponseEntity<ApiResponse<Object>> onThrowException(GeneralException generalException) {
         BaseStatus errorCode = generalException.getCode();
@@ -22,6 +23,7 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.onFailure(errorCode.getCode(), errorCode.getMessage(), null));
     }
 
+    // @Valid 검증 실패 → HTTP 400 + 필드별 에러 메시지 반환
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Map<String, String>>> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException e) {
@@ -51,6 +53,7 @@ public class GlobalExceptionHandler {
                         null));
     }
 
+    // 그 외 예상치 못한 에러 → HTTP 500
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Object>> exception(Exception e) {
         return ResponseEntity.status(ErrorStatus.INTERNAL_SERVER_ERROR.getHttpStatus())
