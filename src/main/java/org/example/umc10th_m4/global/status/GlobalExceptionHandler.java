@@ -59,7 +59,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(ErrorStatus.INTERNAL_SERVER_ERROR.getHttpStatus())
                 .body(ApiResponse.onFailure(
                         ErrorStatus.INTERNAL_SERVER_ERROR.getCode(),
-                        ErrorStatus.INTERNAL_SERVER_ERROR.getMessage() + " (" + e.getMessage() + ")",
+                        ErrorStatus.INTERNAL_SERVER_ERROR.getMessage(),
                         null));
     }
 }

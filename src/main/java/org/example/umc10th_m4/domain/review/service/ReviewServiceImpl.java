@@ -69,7 +69,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional(readOnly = true)
     public CursorPageResponse<ReviewResponseDto> getMyReviews(long memberId, String query, String cursor, int size) {
         // size 유효성 검사
-        if (size < 1) throw new GeneralException(ErrorStatus.BAD_REQUEST);
+        if (size < 1 || size > 100) throw new GeneralException(ErrorStatus.BAD_REQUEST);
 
         memberRepository.findById(memberId)
                 .orElseThrow(() -> new GeneralException(MemberErrorStatus.MEMBER_NOT_FOUND));

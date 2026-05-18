@@ -17,9 +17,10 @@ public class AuthMember implements UserDetails {
     private final Long memberId;
     private final String email;
     private final String password;
+    private final String status;
 
     public static AuthMember from(Member member) {
-        return new AuthMember(member.getId(), member.getEmail(), member.getPassword());
+        return new AuthMember(member.getId(), member.getEmail(), member.getPassword(), member.getStatus());
     }
 
     @Override
@@ -47,5 +48,5 @@ public class AuthMember implements UserDetails {
     public boolean isCredentialsNonExpired() { return true; }
 
     @Override
-    public boolean isEnabled() { return true; }
+    public boolean isEnabled() { return "ACTIVE".equals(status); }
 }
