@@ -1,10 +1,12 @@
 package com.example.umc10th.domain.member.service;
 
+import com.example.umc10th.domain.member.converter.MemberConverter;
 import com.example.umc10th.domain.member.dto.MemberReqDTO;
 import com.example.umc10th.domain.member.dto.MemberResDTO;
 import com.example.umc10th.domain.member.entity.Member;
 import com.example.umc10th.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,18 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;  // 추가
 
     // 회원가입
     @Transactional
     public MemberResDTO.SignupResult signup(MemberReqDTO.Signup request) {
-        Member member = Member.builder()
-                .name(request.name())
-                .nickname(request.nickname())
-                .phone(request.phone())
-                .gender(request.gender())
-                .socialType(request.socialType())
-                .point(0)
-                .build();
+        String encodedPassword = passwordEncoder.encode(request.password());  // 비밀번호 인코딩
+        Member member = MemberConverter.toMember(request, encodedPassword);   // Converter 사용
 
         Member savedMember = memberRepository.save(member);
 
