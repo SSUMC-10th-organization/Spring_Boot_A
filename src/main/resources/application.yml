@@ -1,19 +1,45 @@
 spring:
   application:
-    name: "umc10th" # "umc10th"
+    name: "umc10th"
 
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver # MySQL JDBC ???? ??? ??
-    url: ${DB_URL} # jdbc:mysql://localhost:3306/{???????}
-    username: ${DB_USER} # MySQL ?? ??
-    password: ${DB_PW} # MySQL ????
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PW}
 
   jpa:
-    database: mysql # ??? ?????? ?? ?? (MySQL)
-    database-platform: org.hibernate.dialect.MySQLDialect # Hibernate?? ??? MySQL ??(dialect) ??
-    show-sql: true # ??? SQL ??? ??? ???? ?? ??
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQLDialect
+    show-sql: true
     hibernate:
-      ddl-auto: update # ?????? ?? ? ?????? ???? ??? ??
+      ddl-auto: update
     properties:
       hibernate:
-        format_sql: true # ???? SQL ??? ?? ?? ???
+        format_sql: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ${KAKAO_REST_API_KEY}
+            client-secret: ${KAKAO_REST_API_SECRET}
+            client-authentication-method: client_secret_post
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://localhost:8080/oauth/callback/kakao"
+            scope:
+              - profile_nickname
+              - account_email
+        provider:
+          kakao:
+            authorization-uri: "https://kauth.kakao.com/oauth/authorize"
+            token-uri: "https://kauth.kakao.com/oauth/token"
+            user-info-uri: "https://kapi.kakao.com/v2/user/me"
+            user-name-attribute: id
+
+jwt:
+  token:
+    secretKey: ${JWT_SECRET_KEY}
+    expiration:
+      access: 1800000

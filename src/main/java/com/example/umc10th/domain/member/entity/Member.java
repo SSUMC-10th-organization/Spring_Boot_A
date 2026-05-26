@@ -49,6 +49,9 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private Integer point;
 
+    @Column(nullable = true)
+    private String socialUid;
+
     @Builder.Default                                         // ← 추가
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<MemberTerm> memberTermList = new ArrayList<>();

@@ -13,4 +13,8 @@ public class MemberResDTO {
             String phone,
             Integer point
     ) {}
+
+    public record Login(
+            String accessToken
+    ) {}
 }

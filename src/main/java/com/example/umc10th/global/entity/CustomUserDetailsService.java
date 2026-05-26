@@ -17,6 +17,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Member member = memberRepository.findByEmail(username)
+                .or(() -> memberRepository.findBySocialUid(username))
                 .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다."));
 
         return new AuthMember(member);
