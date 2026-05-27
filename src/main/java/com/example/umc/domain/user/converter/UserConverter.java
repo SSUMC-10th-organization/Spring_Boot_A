@@ -44,6 +44,13 @@ public class UserConverter {
                 .build();
     }
 
+    public static UserResponseDTO.LoginResponse toLoginResponse(String accessToken) {
+        return UserResponseDTO.LoginResponse.builder()
+                .accessToken(accessToken)
+                .tokenType("Bearer")
+                .build();
+    }
+
     public static UserResponseDTO.UserMissionPreviewListResponse toUserMissionPreviewListResponse(
             Page<UserMission> userMissions
     ) {
