@@ -1,6 +1,7 @@
 package org.example.umc10th_m4.global.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,12 +15,16 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
+
+    // Fix 3: 매 요청마다 생성하지 않고 static으로 재사용
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     private final JwtUtil jwtUtil;
     private final CustomUserDetailsService customUserDetailsService;
@@ -33,7 +38,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         try {
             String token = request.getHeader("Authorization");
 
-            // Authorization 헤더가 없거나 Bearer가 아니면 다음 필터로
             if (token == null || !token.startsWith("Bearer ")) {
                 filterChain.doFilter(request, response);
                 return;
@@ -41,9 +45,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             token = token.replace("Bearer ", "");
 
-            // 유효한 토큰이면 인증 객체 생성 후 SecurityContext에 저장
-            if (jwtUtil.isValid(token)) {
-                String email = jwtUtil.getEmail(token);
+            // Fix 4: isValid + getEmail 두 번 파싱 → getEmail 한 번으로 통합
+            // getEmail이 null 반환하면 유효하지 않은 토큰
+            String email = jwtUtil.getEmail(token);
+            if (email != null) {
                 UserDetails user = customUserDetailsService.loadUserByUsername(email);
                 Authentication auth = new UsernamePasswordAuthenticationToken(
                         user,
@@ -54,16 +59,23 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
 
             filterChain.doFilter(request, response);
+
+        // Fix 2: JWT/인증 관련 예외만 401 처리
+        } catch (JwtException | UsernameNotFoundException e) {
+            sendErrorResponse(response);
+
+        // Fix 2: 그 외 예외(DB 장애, 직렬화 실패 등)는 500으로 전파
         } catch (Exception e) {
-            // JWT 파싱 실패, 만료, Signature 불일치 등 → 401 응답
-            ObjectMapper mapper = new ObjectMapper();
-            ErrorStatus code = ErrorStatus.UNAUTHORIZED;
-
-            response.setContentType("application/json;charset=UTF-8");
-            response.setStatus(code.getHttpStatus().value());
-
-            ApiResponse<Void> errorResponse = ApiResponse.onFailure(code, null);
-            mapper.writeValue(response.getOutputStream(), errorResponse);
+            throw new ServletException("JWT 필터 내부 오류", e);
         }
+    }
+
+    private void sendErrorResponse(HttpServletResponse response) throws IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        response.setStatus(ErrorStatus.UNAUTHORIZED.getHttpStatus().value());
+        objectMapper.writeValue(
+                response.getOutputStream(),
+                ApiResponse.onFailure(ErrorStatus.UNAUTHORIZED, null)
+        );
     }
 }
