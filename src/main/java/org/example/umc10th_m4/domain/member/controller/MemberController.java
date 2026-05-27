@@ -1,22 +1,18 @@
 package org.example.umc10th_m4.domain.member.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.umc10th_m4.domain.member.dto.*;
 import org.example.umc10th_m4.domain.member.service.MemberService;
 import org.example.umc10th_m4.global.common.ApiResponse;
+import org.example.umc10th_m4.global.security.AuthMember;
+import org.example.umc10th_m4.global.security.JwtUtil;
 import org.example.umc10th_m4.global.status.SuccessStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +21,7 @@ public class MemberController {
 
     private final MemberService memberService;
     private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
     @PostMapping("/signup")
     public ApiResponse<MemberResponseDto> signUp(@RequestBody @Valid MemberSignupRequestDto request) {
@@ -32,20 +29,31 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ApiResponse<MemberResponseDto> login(@RequestBody MemberLoginRequestDto request,
-                                                HttpServletRequest httpRequest) {
+    public ApiResponse<MemberResponseDto> login(@RequestBody MemberLoginRequestDto request) {
+        // 이메일 + 비밀번호 검증
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
 
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
-        context.setAuthentication(authentication);
-        SecurityContextHolder.setContext(context);
+        // 인증 성공 → AuthMember에서 JWT 토큰 생성
+        AuthMember authMember = (AuthMember) authentication.getPrincipal();
+        String accessToken = jwtUtil.createAccessToken(authMember);
 
-        HttpSession session = httpRequest.getSession(true);
-        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
+        // 회원 정보 조회 후 토큰 포함해서 응답
+        MemberResponseDto memberInfo = memberService.getMember(authMember.getMemberId());
+        return ApiResponse.onSuccess(MemberResponseDto.builder()
+                .memberId(memberInfo.getMemberId())
+                .name(memberInfo.getName())
+                .email(memberInfo.getEmail())
+                .point(memberInfo.getPoint())
+                .token(accessToken)
+                .build());
+    }
 
-        return ApiResponse.onSuccess(memberService.getMemberByEmail(request.getEmail()));
+    // 마이페이지 v2: JWT 토큰으로 본인 정보 조회
+    @GetMapping("/me")
+    public ApiResponse<MemberResponseDto> getMyProfile(@AuthenticationPrincipal AuthMember authMember) {
+        return ApiResponse.onSuccess(memberService.getMember(authMember.getMemberId()));
     }
 
     @GetMapping("/{member_id}")
@@ -57,33 +65,4 @@ public class MemberController {
     public ApiResponse<String> deleteMember(@PathVariable(name = "member_id") long memberId) {
         return ApiResponse.onSuccess("회원 탈퇴 완료");
     }
-
-//    @GetMapping("/{member_id}/alarms")
-//    public ApiResponse<List<MemberAlarmResponseDto>> getAlarms(
-//            @PathVariable(name = "member_id") long memberId,
-//            @RequestParam(name = "unread") boolean unread) {
-//        return ApiResponse.onSuccess(null);
-//    }
-//
-//    @PatchMapping("/alarms/{alarm_id}/read")
-//    public ApiResponse<MemberAlarmResponseDto> readAlarm(@PathVariable(name = "alarm_id") long alarmId) {
-//        return ApiResponse.onSuccess(null);
-//    }
-//
-//    @DeleteMapping("/alarms/{alarm_id}")
-//    public ApiResponse<String> deleteAlarm(@PathVariable(name = "alarm_id") long alarmId) {
-//        return ApiResponse.onSuccess("알람 삭제 완료");
-//    }
-//
-//    @PostMapping("/{member_id}/questions")
-//    public ApiResponse<MemberResponseDto> addQuestion(
-//            @PathVariable(name = "member_id") long memberId,
-//            @RequestBody MemberQuestionRequestDto request) {
-//        return ApiResponse.onSuccess(null);
-//    }
-//
-//    @GetMapping("/{member_id}/questions")
-//    public ApiResponse<List<MemberResponseDto>> getQuestions(@PathVariable(name = "member_id") long memberId) {
-//        return ApiResponse.onSuccess(null);
-//    }
 }
