@@ -41,6 +41,8 @@ public class UserReqDTO {
         private String phone;
     }
 
+    public record Login(String email, String password) {}
+
     @Getter
     public static class MissionSuccessReq {
 

@@ -5,12 +5,15 @@ import com.example.umc10th.domain.user.dto.UserResDTO;
 import com.example.umc10th.domain.user.exception.code.UserSuccessCode;
 import com.example.umc10th.domain.user.service.UserService;
 import com.example.umc10th.global.apiPayload.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "인증", description = "회원가입/로그인 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
@@ -59,10 +62,21 @@ public class AuthController {
     }
 
     // 회원가입
+    @Operation(summary = "회원가입")
     @PostMapping("/users")
     public ApiResponse<UserResDTO.JoinRes> join(
             @Valid @RequestBody UserReqDTO.JoinReq request
     ) {
         return ApiResponse.onSuccess(UserSuccessCode.USER_JOIN_OK, userService.joinUser(request));
+    }
+
+    // JWT 로그인
+    @Operation(summary = "로그인", description = "이메일/비밀번호로 로그인 후 JWT 액세스 토큰을 반환합니다.")
+    @PostMapping("/login")
+    public ApiResponse<UserResDTO.LoginRes> login(
+            @RequestBody UserReqDTO.Login request
+    ) {
+        String token = userService.login(request.email(), request.password());
+        return ApiResponse.onSuccess(UserSuccessCode.USER_LOGIN_OK, new UserResDTO.LoginRes(token));
     }
 }

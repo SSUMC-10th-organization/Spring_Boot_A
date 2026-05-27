@@ -34,6 +34,11 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-api:3.0.1'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     testImplementation 'org.springframework.security:spring-security-test'
+    // JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+    implementation 'org.springframework.boot:spring-boot-configuration-processor'
 }
 
 tasks.named('test') {

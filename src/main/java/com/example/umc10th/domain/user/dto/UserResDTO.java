@@ -58,4 +58,6 @@ public class UserResDTO {
         private Long userId;
         private String email;
     }
+
+    public record LoginRes(String accessToken) {}
 }

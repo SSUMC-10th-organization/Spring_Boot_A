@@ -15,7 +15,8 @@ public enum UserSuccessCode implements BaseSuccessCode {
     USER_MISSIONS_OK(HttpStatus.OK, "USER_200_3", "미션 목록 조회 성공"),
     USER_MISSION_CHALLENGE_OK(HttpStatus.CREATED, "USER_201_0", "미션 도전 성공"),
     USER_MISSION_SUCCESS_OK(HttpStatus.OK, "USER_200_4", "미션 성공 처리 완료"),
-    USER_JOIN_OK(HttpStatus.CREATED, "USER_201_1", "회원가입 성공");
+    USER_JOIN_OK(HttpStatus.CREATED, "USER_201_1", "회원가입 성공"),
+    USER_LOGIN_OK(HttpStatus.OK, "USER_200_5", "로그인 성공");
 
     private final HttpStatus status;
     private final String code;

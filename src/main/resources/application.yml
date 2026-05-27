@@ -17,3 +17,9 @@ spring:
     properties:
       hibernate:
         format_sql: true # ???? SQL ??? ?? ?? ???
+
+jwt:
+  token:
+    secretKey: my-secret-key-that-is-at-least-256-bits-long-for-security
+    expiration:
+      access: 1800000

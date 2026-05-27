@@ -7,6 +7,8 @@ import com.example.umc10th.domain.user.enums.Gender;
 import com.example.umc10th.domain.user.exception.UserException;
 import com.example.umc10th.domain.user.exception.code.UserErrorCode;
 import com.example.umc10th.domain.user.repository.UserRepository;
+import com.example.umc10th.global.security.AuthMember;
+import com.example.umc10th.global.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     @Override
     public UserResDTO.MyPageRes getMyPage(Long userId) {
@@ -56,5 +59,17 @@ public class UserServiceImpl implements UserService {
                 .userId(saved.getId())
                 .email(saved.getEmail())
                 .build();
+    }
+
+    @Override
+    public String login(String email, String password) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_LOGIN_FAILED));
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new UserException(UserErrorCode.USER_LOGIN_FAILED);
+        }
+
+        return jwtUtil.createAccessToken(new AuthMember(user));
     }
 }
