@@ -30,4 +30,13 @@ public class AuthRestController {
         UserResponseDTO.SignUpResponse response = userService.signUp(request);
         return ApiResponse.of(UserSuccessCode.USER_SIGNED_UP, response);
     }
+
+    @Operation(summary = "로그인 API", description = "이메일과 비밀번호 검증 후 JWT Access Token을 발급합니다.")
+    @PostMapping("/login")
+    public ApiResponse<UserResponseDTO.LoginResponse> login(
+            @RequestBody @Valid UserRequestDTO.LoginRequest request
+    ) {
+        UserResponseDTO.LoginResponse response = userService.login(request);
+        return ApiResponse.of(UserSuccessCode.USER_LOGGED_IN, response);
+    }
 }

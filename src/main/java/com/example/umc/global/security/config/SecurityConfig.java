@@ -2,6 +2,7 @@ package com.example.umc.global.security.config;
 
 import com.example.umc.global.security.handler.CustomAccessDeniedHandler;
 import com.example.umc.global.security.handler.CustomAuthenticationEntryPoint;
+import com.example.umc.global.security.jwt.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +12,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -19,9 +21,11 @@ public class SecurityConfig {
 
     private static final String[] PUBLIC_URIS = {
             "/api/v1/auth/signup",
+            "/api/v1/auth/login",
             "/login",
             "/logout",
             "/error",
+            "/h2-console/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
             "/swagger-resources/**",
@@ -30,6 +34,7 @@ public class SecurityConfig {
 
     private final CustomAccessDeniedHandler accessDeniedHandler;
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+    private final JwtAuthFilter jwtAuthFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -51,10 +56,14 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 )
+                .headers(headers -> headers
+                        .frameOptions(frameOptions -> frameOptions.sameOrigin())
+                )
                 .exceptionHandling(exceptions -> exceptions
                         .accessDeniedHandler(accessDeniedHandler)
                         .authenticationEntryPoint(authenticationEntryPoint)
-                );
+                )
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

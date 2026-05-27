@@ -10,6 +10,8 @@ import com.example.umc.domain.user.repository.UserRepository;
 import com.example.umc.domain.userMission.entity.UserMission;
 import com.example.umc.domain.userMission.entity.UserMissionStatus;
 import com.example.umc.domain.userMission.repository.UserMissionRepository;
+import com.example.umc.global.security.CustomUserDetails;
+import com.example.umc.global.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +27,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMissionRepository userMissionRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     @Transactional
     public UserResponseDTO.SignUpResponse signUp(UserRequestDTO.SignUpRequest request) {
@@ -36,8 +39,20 @@ public class UserService {
         return UserConverter.toSignUpResponse(userRepository.save(user));
     }
 
-    public UserResponseDTO.MyPageResponse getMyPage(UserRequestDTO.MyPageRequest request) {
-        User user = userRepository.findById(request.getId())
+    public UserResponseDTO.LoginResponse login(UserRequestDTO.LoginRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new UserException(UserErrorCode.INVALID_EMAIL_OR_PASSWORD));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new UserException(UserErrorCode.INVALID_EMAIL_OR_PASSWORD);
+        }
+
+        String accessToken = jwtUtil.generateAccessToken(new CustomUserDetails(user));
+        return UserConverter.toLoginResponse(accessToken);
+    }
+
+    public UserResponseDTO.MyPageResponse getMyPage(Long userId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
         return UserConverter.toMyPageResponse(user);
     }

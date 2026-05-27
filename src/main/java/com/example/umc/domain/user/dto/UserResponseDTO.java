@@ -67,4 +67,13 @@ public class UserResponseDTO {
         private String name;
         private LocalDateTime createdAt;
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class LoginResponse {
+        private String accessToken;
+        private String tokenType;
+    }
 }
